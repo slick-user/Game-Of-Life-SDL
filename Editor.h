@@ -20,6 +20,8 @@ public:
   void placeCell();
   void deleteCell();
 
+  void step();
+
   std::vector<Cell> cell;
   
 };
@@ -51,7 +53,7 @@ void Editor::placeCell() {
 
 void Editor::deleteCell() {
   int index = -1;
-  for (int i=0; i<cell.size(); i++) {
+  for (int i=0; i<int(cell.size()); i++) {
     if ( (((x/50) * 50) == (cell[i].x / 50) * 50) && ((y/50) * 50 == (cell[i].y / 50) * 50)) {
       index = i;
       break;
@@ -59,4 +61,35 @@ void Editor::deleteCell() {
   }
   if (index != -1)
     cell.erase(cell.begin() + index);
-} 
+}
+
+void Editor::step() {
+
+  for (int i=0; i<int(cell.size()); i++) { 
+    int neighbours = 0;
+    for (int j=0; j<int(cell.size()); j++) {
+      if (j == i)
+        continue;
+      else {
+        if (cell[i].x + 50 == cell[j].x)
+          neighbours++;
+        
+        if (cell[i].x - 50 == cell[j].x)
+          neighbours++;
+
+        if (cell[i].y + 50 == cell[j].y)
+          neighbours++;
+
+        if (cell[i].y - 50 == cell[j].y)
+          neighbours++;
+
+      }
+    }
+    if (neighbours < 2)
+      cell.erase(cell.begin() + i);
+
+  }
+
+// for now we have a system for checking neighbouring cells but tbh I'm pretty sure this is a garbage way of doing this
+
+}

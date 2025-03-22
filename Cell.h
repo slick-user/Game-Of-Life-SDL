@@ -20,3 +20,4 @@ void Cell::update() {
   cell.w = 50;
   cell.h = 50;
 }
+

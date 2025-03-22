@@ -1,6 +1,7 @@
 #include "include/SDL2/SDL.h"
 
 #include "Editor.h"
+#include "include/SDL2/SDL_render.h"
 
 const int SCREEN_WIDTH = 400;
 const int SCREEN_HEIGHT = 400;
@@ -71,6 +72,13 @@ void loop() {
             editor.deleteCell();
             break;
           }
+        
+      }
+      
+      switch (event.key.keysym.sym) {
+        case SDLK_UP:
+          editor.step();
+          break;
       }
       
     }
@@ -78,15 +86,14 @@ void loop() {
     SDL_RenderClear(renderer);
 
     createGrid();
-    // Rendering Cell
-    //SDL_RenderFillRect(renderer, &Cell); 
-    //SDL_SetRenderDrawColor(renderer, 140, 0, 70, 255);
-    for (int i=0; i<editor.cell.size(); i++) {
+    // Rendering Cells
+    for (int i=0; i<int(editor.cell.size()); i++) {
+      SDL_SetRenderDrawColor(renderer, 0, 60, 70, 255);
       SDL_RenderFillRect(renderer, &editor.cell[i].cell);
     }
 
     // Rendering the Background
-    SDL_SetRenderDrawColor(renderer, 30, 60, 70, 255);
+    SDL_SetRenderDrawColor(renderer, 140, 60, 70, 255);
     SDL_RenderPresent(renderer);
 
     SDL_Delay(1000/60);
