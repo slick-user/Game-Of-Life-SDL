@@ -64,6 +64,12 @@ void loop() {
         case SDL_MOUSEBUTTONUP:
           if (event.button.button == SDL_BUTTON_LEFT) {
             editor.placeCell();
+            break;  
+          }
+
+          if (event.button.button == SDL_BUTTON_RIGHT) {
+            editor.deleteCell();
+            break;
           }
       }
       
@@ -75,7 +81,7 @@ void loop() {
     // Rendering Cell
     //SDL_RenderFillRect(renderer, &Cell); 
     //SDL_SetRenderDrawColor(renderer, 140, 0, 70, 255);
-    for (int i=0; i<editor.getCells(); i++) {
+    for (int i=0; i<editor.cell.size(); i++) {
       SDL_RenderFillRect(renderer, &editor.cell[i].cell);
     }
 
