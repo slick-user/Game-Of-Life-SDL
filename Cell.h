@@ -9,8 +9,12 @@ public:
   int x;
   int y;
   
-  Cell(int x=0, int y=0) : x(x), y(y) { cell.x = x; cell.y = y; std::cout << "cell created" << std::endl; }
+  Cell(int x=0, int y=0) : x(x), y(y) { cell.x = x; cell.y = y;}
   void update();
+
+  // GETTERS
+  int getX() { return cell.x; }
+  int getY() { return cell.y; }
 
 };
 

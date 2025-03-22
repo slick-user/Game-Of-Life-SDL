@@ -46,9 +46,6 @@ void Editor::placeCell() {
     cell.push_back(Cell(x, y));
     cell.back().update();
   }
-  else {
-    std::cout << "cannot make a size there";
-  }
 }
 
 void Editor::deleteCell() {
@@ -65,31 +62,40 @@ void Editor::deleteCell() {
 
 void Editor::step() {
 
+  // not a data type I have used before but is an interesting thing..
+  std::vector<std::pair<int, int>> neighbourOffsets = {
+    {-50, -50}, {0, -50}, {50, -50},
+    {-50, 0  },           {50,  0 }, 
+    {-50, 50 }, {0,  50}, {50, 50 }
+  };
+
+  std::vector<int> toRemove; 
+
   for (int i=0; i<int(cell.size()); i++) { 
     int neighbours = 0;
+
     for (int j=0; j<int(cell.size()); j++) {
-      if (j == i)
-        continue;
-      else {
-        if (cell[i].x + 50 == cell[j].x)
+      if (j == i) continue;
+      
+      for (auto [dx, dy] : neighbourOffsets) {
+        if (cell[i].cell.x + dx == cell[j].cell.x && cell[i].cell.y + dy == cell[j].cell.y) { 
           neighbours++;
-        
-        if (cell[i].x - 50 == cell[j].x)
-          neighbours++;
-
-        if (cell[i].y + 50 == cell[j].y)
-          neighbours++;
-
-        if (cell[i].y - 50 == cell[j].y)
-          neighbours++;
-
+        }
       }
     }
-    if (neighbours < 2)
-      cell.erase(cell.begin() + i);
 
+    std::cout << "CELL: " << i << " has " << neighbours << " neighbours\n";
+
+    if (neighbours < 2)
+      toRemove.push_back(i); 
+  
   }
 
-// for now we have a system for checking neighbouring cells but tbh I'm pretty sure this is a garbage way of doing this
+  for (int i = int(toRemove.size()) - 1; i >= 0; i--) {
+    if (toRemove[i] >= 0 && toRemove[i] < int(cell.size()) ) 
+      cell.erase(cell.begin() + toRemove[i]);
+  }
 
 }
+
+// now we check 8 dimenstions of neighbours, and we do so iteratively and we make the changes after going through the entire array of cells instead of while iterating
