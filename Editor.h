@@ -1,5 +1,8 @@
 #include "Cell.h"
+#include <algorithm>
+#include <unordered_map>
 #include <vector>
+
 
 class Editor {
 private:
@@ -60,6 +63,12 @@ void Editor::deleteCell() {
     cell.erase(cell.begin() + index);
 }
 
+struct PairHash {
+  std::size_t operator() (const std::pair<int, int>& p) const {
+    return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+  }
+};
+
 void Editor::step() {
 
   std::vector<std::pair<int, int>> neighbourOffsets = {
@@ -68,60 +77,51 @@ void Editor::step() {
     {-50, 50 }, {0,  50}, {50, 50 }
   };
 
-  std::vector<std::pair<int, int>> deadCells; // x and y coords of dead cells
-  std::vector<int> deadCellNeighbour; // neighbour count for dead cells
+  std::unordered_map<std::pair<int, int>, int, PairHash> deadCellMap;
   std::vector<int> toRemove; 
 
   for (int i=0; i<int(cell.size()); i++) { 
     int neighbours = 0;
 
-    bool found = false;
     for (auto [dx, dy] : neighbourOffsets) {
       int nx = cell[i].cell.x + dx;
       int ny = cell[i].cell.y + dy;
-  
+      bool found = false;
+
       // This is for the live cells to check their neighbours
-      for (int j=0; j < int(cell.size()); j++) {
-        if (cell[j].getX() == nx && cell[j].getY() == ny) { 
+      for (const auto& c : cell) {
+        if (c.getX() == nx && c.getY() == ny) { 
           neighbours++;
           found = true;
           break;
         }
       }
-      if (!found && neighbours == 0) {
-        bool alreadyTracked = false;
-        for (int k=0; k < int(deadCells.size()); k++) {
-          if (deadCells[k].first == nx && deadCells[k].second == ny) {
-            deadCellNeighbour[k]++;
-            alreadyTracked = true;
-            break;
-          }
-        }
-        if (!alreadyTracked) {
-          deadCells.push_back({nx, ny});
-          deadCellNeighbour.push_back(1);    
-        }
+      if (!found) {
+        deadCellMap[{nx, ny}]++; 
       }
     }
 
     if (neighbours < 2 || neighbours > 3)
-      toRemove.push_back(i); 
-   
+      toRemove.push_back(i);  
   }
 
   // Revive the cells that are to live
-  for (int i=0; i < int(deadCells.size()); i++) {
-    if (deadCellNeighbour[i] == 3) {
-      cell.push_back(Cell(deadCells[i].first, deadCells[i].second));
+  for (const auto& [pos, count] : deadCellMap) {
+    if (count == 3) {
+      cell.push_back(Cell(pos.first, pos.second));
     }
   } 
 
   // Remove the cells that are to die
+  std::sort(toRemove.begin(), toRemove.end(), std::greater<int>());
   for (int i = int(toRemove.size()) - 1; i >= 0; i--) {
     if (toRemove[i] >= 0 && toRemove[i] < int(cell.size()) ) { 
       cell.erase(cell.begin() + toRemove[i]);
     }
   }
+
+  for (int i=0; i<cell.size(); i++) {
+    cell[i].update();
+  }
 }
 
-// now we check 8 dimenstions of neighbours, and we do so iteratively and we make the changes after going through the entire array of cells instead of while iterating

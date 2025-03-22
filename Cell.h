@@ -13,8 +13,8 @@ public:
   void update();
 
   // GETTERS
-  int getX() { return cell.x; }
-  int getY() { return cell.y; }
+  int getX() const { return cell.x; }
+  int getY() const { return cell.y; }
 
 };
 

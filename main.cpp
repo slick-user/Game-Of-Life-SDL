@@ -1,13 +1,13 @@
 #include "include/SDL2/SDL.h"
 
 #include "Editor.h"
-#include "include/SDL2/SDL_render.h"
+#include "include/SDL2/SDL_video.h"
 
-const int SCREEN_WIDTH = 400;
-const int SCREEN_HEIGHT = 400;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
 
-const int ROWS = 8;
-const int COLS = 8;
+const int ROWS = 32;
+const int COLS = 32;
 const int GRID_WIDTH = 50;
 const int GRID_HEIGHT = 50;
 
@@ -31,12 +31,15 @@ void kill() {
 
 int init() {
   
-  if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
+  if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) 
+  {
     system("pause");
     return 1;
   }
 
-  window = SDL_CreateWindow("CONWAYS GAME OF LIFE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+  window = SDL_CreateWindow("CONWAYS GAME OF LIFE", 
+                            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                            SCREEN_WIDTH, SCREEN_HEIGHT, 0);
   renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
   SDL_RenderFillRect(renderer, &Cell); 
@@ -114,10 +117,13 @@ int main(int argc, char* args[]) {
 void createGrid() {
   for (int i=0; i < ROWS; i++) {
     for (int j=0; j < COLS; j++) {
-      SDL_Rect Grid = (SDL_Rect) {j*GRID_WIDTH, i*GRID_HEIGHT, GRID_WIDTH, GRID_HEIGHT};
+
+      SDL_Rect Grid = (SDL_Rect) {j*GRID_WIDTH, i*GRID_HEIGHT, 
+                                  GRID_WIDTH, GRID_HEIGHT};
 
       SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
       SDL_RenderDrawRect(renderer, &Grid);
+    
     }
   }
 }
