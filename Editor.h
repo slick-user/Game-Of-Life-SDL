@@ -40,7 +40,7 @@ void Editor::setY(int Yval) {
 void Editor::placeCell() {
   bool is_cell = false;
   for (const auto& c : cell) {
-    if ( (((x/50) * 50) == (c.x / 50) * 50) && ((y/50) * 50 == (c.y / 50) * 50)) {
+    if ( (((x/25) * 25) == (c.x / 25) * 25) && ((y/25) * 25 == (c.y / 25) * 25)) {
       is_cell = true;
       break;
     } 
@@ -54,7 +54,7 @@ void Editor::placeCell() {
 void Editor::deleteCell() {
   int index = -1;
   for (int i=0; i<int(cell.size()); i++) {
-    if ( (((x/50) * 50) == (cell[i].x / 50) * 50) && ((y/50) * 50 == (cell[i].y / 50) * 50)) {
+    if ( (((x/25) * 25) == (cell[i].x / 25) * 25) && ((y/25) * 25 == (cell[i].y / 25) * 25)) {
       index = i;
       break;
     } 
@@ -72,9 +72,9 @@ struct PairHash {
 void Editor::step() {
 
   std::vector<std::pair<int, int>> neighbourOffsets = {
-    {-50, -50}, {0, -50}, {50, -50},
-    {-50, 0  },           {50,  0 }, 
-    {-50, 50 }, {0,  50}, {50, 50 }
+    {-25, -25}, {0, -25}, {25, -25},
+    {-25, 0  },           {25,  0 }, 
+    {-25, 25 }, {0,  25}, {25, 25 }
   };
 
   std::unordered_map<std::pair<int, int>, int, PairHash> deadCellMap;
@@ -120,7 +120,7 @@ void Editor::step() {
     }
   }
 
-  for (int i=0; i<cell.size(); i++) {
+  for (int i=0; int(i<cell.size()); i++) {
     cell[i].update();
   }
 }

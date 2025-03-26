@@ -19,9 +19,9 @@ public:
 };
 
 void Cell::update() {
-  cell.x = (x / 50) * 50;
-  cell.y = (y / 50) * 50;
-  cell.w = 50;
-  cell.h = 50;
+  cell.x = (x / 25) * 25;
+  cell.y = (y / 25) * 25;
+  cell.w = 25;
+  cell.h = 25;
 }
 
